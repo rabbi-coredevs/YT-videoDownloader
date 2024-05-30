@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download YouTube Audio</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        #loading {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Download YouTube Audio</h1>
+    <form id="downloadForm">
+        <label for="uri">YouTube URL:</label>
+        <input type="text" id="uri" name="uri" required>
+        <button type="submit">Download</button>
+    </form>
+    <p id="loading">Downloading...</p>
+
+    <script>
+        document.getElementById('downloadForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const uri = document.getElementById('uri').value;
+            const loadingIndicator = document.getElementById('loading');
+            loadingIndicator.style.display = 'block'; // Show loading indicator
+            console.log(uri);
+
+            try {
+                const response = await axios.post('http://localhost:3000/download-audio', { uri }, {
+                    responseType: 'blob'
+                });
+
+                const blob = new Blob([response.data], { type: 'audio/mp3' });
+                const downloadUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+
+                // Extract video ID or generate a better name
+                const videoId = uri.split('v=')[1]?.split('&')[0];
+                a.download = videoId ? `${videoId}.mp3` : 'audio.mp3';
+
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(downloadUrl); // Revoke the object URL
+                alert('Download completed successfully!');
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while downloading the audio. Please check the console for more details.');
+            } finally {
+                loadingIndicator.style.display = 'none'; // Hide loading indicator
+            }
+        });
+    </script>
+</body>
+</html>

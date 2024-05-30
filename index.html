@@ -48,9 +48,6 @@
             box-sizing: border-box;
             margin-bottom: 10px;
         }
-        .opt{
-            height: 40px;
-        }
         
     </style>
 </head>
@@ -59,7 +56,7 @@
     <form id="urlForm" class="form-comp">
         <input type="url" id="urlInput" name="urlInput" placeholder="Enter a YouTube URL" required>
         <select id="downloadType" name="downloadType" required>
-            <option class="opt" value="highestvideo">1080p</option>
+            <option value="highestvideo">1080p</option>
             <option value="highest">720p</option>
             <option value="lowest">360p</option>
             <option value="audio">Audio</option>
@@ -85,7 +82,6 @@
                 'lowest': 'lowest',
                 'audio': 'highestaudio'
             };
-
             const quality = qualityMap[downloadType];
             const endpoint = downloadType === 'audio' ? '/download-audio' : '/download';
 
